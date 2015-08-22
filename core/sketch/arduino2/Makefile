@@ -1,3 +1,3 @@
-BOARD_TAG = pro5v328g
+BOARD_TAG = pro5v328
 ARDUINO_PORT = /dev/ttyACM0
-include /usr/local/opt/arduino-mk/Arduino.mk
+include /home/gavin/Development/robotics/Arduino-Makefile/Arduino.mk
