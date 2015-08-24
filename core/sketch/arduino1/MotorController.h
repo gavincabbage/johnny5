@@ -15,22 +15,22 @@
 
 class MotorController {
 
-  public:
-    MotorController(byte eL, byte c1L, byte c2L, byte eR, byte c1R, byte c2R);
-    void moveForward();
-    void moveBackward();
-    void turnLeft();
-    void turnRight();
-    void stop();
+    public:
+        MotorController(byte eL, byte c1L, byte c2L, byte eR, byte c1R, byte c2R);
+        void moveForward();
+        void moveBackward();
+        void turnLeft();
+        void turnRight();
+        void stop();
 
-  private:
-    byte enableLeft;
-    byte control1Left;
-    byte control2Left;
-    byte enableRight;
-    byte control1Right;
-    byte control2Right;
-    void preamble();
+    private:
+        byte enableLeft;
+        byte control1Left;
+        byte control2Left;
+        byte enableRight;
+        byte control1Right;
+        byte control2Right;
+        void preamble();
 };
 
 #endif
