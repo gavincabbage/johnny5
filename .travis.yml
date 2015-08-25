@@ -8,6 +8,4 @@ install:
   - go get github.com/kidoman/embd
   
 env:
-  - GOOS=linux
-  - GOARCH=arm
-  - GOARM=7
+  - GOOS=linux GOARCH=arm GOARM=7
