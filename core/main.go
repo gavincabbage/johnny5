@@ -30,7 +30,7 @@ var LOOK map[string]byte = map[string]byte{
 }
 
 var (
-	arduino1, arduino2 byte
+	arduino1, arduino2 byte = 4, 5
 	hostname, port string
 	bus embd.I2CBus
 	router *mux.Router
@@ -39,7 +39,10 @@ var (
 func lookHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("ENTER lookHandler")
 	direction := mux.Vars(r)["direction"]
-	bus.WriteByte(arduino2, LOOK[direction])
+	err := bus.WriteByte(arduino2, LOOK[direction])
+	if err != nil {
+		panic(err)
+	}
 	w.Write(nil)
 }
 
@@ -47,6 +50,9 @@ func moveHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("ENTER moveHandler")
 	direction := mux.Vars(r)["direction"]
 	bus.WriteByte(arduino1, MOVE[direction])
+	if err != nil {
+		panic(err)
+	}
 	w.Write(nil)
 }
 
@@ -68,6 +74,6 @@ func main() {
 	router.HandleFunc("/move/{direction}", moveHandler).Methods("GET")
 	http.Handle("/", router)
 
-	host := "127.0.0.1:8080"
+	host := "0.0.0.0:8080"
 	http.ListenAndServe(host, router)
 }
