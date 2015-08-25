@@ -1,6 +1,6 @@
 #include <Wire.h>
 
-#include "../gbot.h"
+#include "../common.hpp"
 #include "MotorController.h"
 
 int status = STATUS_OK;

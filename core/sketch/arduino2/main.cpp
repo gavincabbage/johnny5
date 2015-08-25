@@ -4,7 +4,7 @@
 #include <Wire.h>
 #include <Servo.h>
 
-#include "../gbot.h"
+#include "../common.hpp"
 
 Servo servo_x, servo_y;
 int servo_x_direction = SERVO_CENTER;
