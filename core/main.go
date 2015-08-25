@@ -9,10 +9,6 @@ import (
 	_ "github.com/kidoman/embd/host/rpi"
 )
 
-const (
-	REDIS_HOST string = "127.0.0.1:4290"
-)
-
 var MOVE map[string]byte = map[string]byte{
 	"forward" : 10,
 	"back" : 11,
@@ -49,7 +45,7 @@ func lookHandler(w http.ResponseWriter, r *http.Request) {
 func moveHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("ENTER moveHandler")
 	direction := mux.Vars(r)["direction"]
-	bus.WriteByte(arduino1, MOVE[direction])
+	err := bus.WriteByte(arduino1, MOVE[direction])
 	if err != nil {
 		panic(err)
 	}
