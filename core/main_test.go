@@ -2,6 +2,6 @@ package main
 
 import "testing"
 
-func TestTesting(t *testing.T) {
+func TestCore(t *testing.T) {
 
 }
