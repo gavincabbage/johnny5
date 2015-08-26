@@ -31,8 +31,14 @@ type Bot interface {
     Look(direction string) error
 }
 
+type I2CBus interface {
+	ReadByte(addr byte) (value byte, err error)
+	WriteByte(addr, value byte) error
+	Close() error
+}
+
 type CoreBot struct {
-    bus embd.I2CBus
+    bus I2CBus
 }
 
 func (bot CoreBot) Move(direction string) error {
