@@ -55,6 +55,10 @@ func (bot CoreBot) Look(direction string) error {
 	return errors.New("invalid look direction")
 }
 
+func (bot CoreBot) Close() error {
+	return nil
+}
+
 func NewCoreBot() CoreBot {
 	b := embd.NewI2CBus(1)
 	return CoreBot{bus: b}
