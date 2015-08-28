@@ -1,0 +1,79 @@
+<html>
+
+<head>
+    <title>Test Page</title>
+</head>
+
+<body>
+
+    <img id="stream-window" src="http://192.168.1.171:9090/feed">
+
+    <br>
+
+    <a onclick="move('forward')">forward</a>
+    <a onclick="move('back')">back</a>
+    <a onclick="move('left')">left</a>
+    <a onclick="move('right')">right</a>
+    <a onclick="move('stop')">stop</a>
+
+    <br>
+
+    <a onclick="look('up')">up</a>
+    <a onclick="look('down')">down</a>
+    <a onclick="look('left')">left</a>
+    <a onclick="look('right')">right</a>
+    <a onclick="look('center')">center</a>
+
+    <br>
+
+    <a onclick="distance()">distance</a>
+
+</body>
+
+<script>
+function simple_command(command, direction)
+{
+    var url = "http://192.168.1.171:8080/" + command + "/" + direction;
+    var xmlHttp = new XMLHttpRequest();
+
+    xmlHttp.onreadystatechange = function()
+    {
+        if (xmlHttp.readyState==4) {
+
+            console.log(url + " : " + xmlHttp.status);
+        }
+    }
+
+    xmlHttp.open("GET", url, true);
+    xmlHttp.send();
+}
+
+function move(direction)
+{
+    simple_command("move", direction);
+}
+
+function look(direction)
+{
+    simple_command("look", direction);
+}
+
+function distance()
+{
+    var url = "http://192.168.1.171:8080/distance"
+    var xmlHttp = new XMLHttpRequest();
+
+    xmlHttp.onreadystatechange = function()
+    {
+        if (xmlHttp.readyState==4) {
+
+            console.log(url + " : " + xmlHttp.status + " : " + xmlHttp.responseText);
+        }
+    }
+
+    xmlHttp.open("GET", url, true);
+    xmlHttp.send();
+}
+</script>
+
+</html>
