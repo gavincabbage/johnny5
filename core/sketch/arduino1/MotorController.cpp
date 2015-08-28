@@ -1,4 +1,4 @@
-#include "MotorController.h"
+#include "MotorController.hpp"
 
 #define DELAY 10
 #define C1L_FORWARD HIGH
@@ -10,8 +10,7 @@
 #define C1R_BACKWARD HIGH
 #define C2R_BACKWARD LOW
 
-MotorController::MotorController(byte eL, byte c1L, byte c2L, byte eR, byte c1R, byte c2R)
-{
+MotorController::MotorController(byte eL, byte c1L, byte c2L, byte eR, byte c1R, byte c2R) {
     enableLeft = eL;
     control1Left = c1L;
     control2Left = c2L;
@@ -27,8 +26,7 @@ MotorController::MotorController(byte eL, byte c1L, byte c2L, byte eR, byte c1R,
     pinMode(control2Right, OUTPUT);
 }
 
-void MotorController::moveForward()
-{
+void MotorController::moveForward() {
     preamble();
     digitalWrite(control1Left, C1L_FORWARD);
     digitalWrite(control2Left, C2L_FORWARD);
@@ -36,8 +34,7 @@ void MotorController::moveForward()
     digitalWrite(control2Right, C2R_FORWARD);
 }
 
-void MotorController::moveBackward()
-{
+void MotorController::moveBackward() {
     preamble();
     digitalWrite(control1Left, C1L_BACKWARD);
     digitalWrite(control2Left, C2L_BACKWARD);
@@ -45,8 +42,7 @@ void MotorController::moveBackward()
     digitalWrite(control2Right, C2R_BACKWARD);
 }
 
-void MotorController::turnLeft()
-{
+void MotorController::turnLeft() {
     preamble();
     digitalWrite(control1Left, C1L_BACKWARD);
     digitalWrite(control2Left, C2L_BACKWARD);
@@ -54,8 +50,7 @@ void MotorController::turnLeft()
     digitalWrite(control2Right, C2R_FORWARD);
 }
 
-void MotorController::turnRight()
-{
+void MotorController::turnRight() {
     preamble();
     digitalWrite(control1Left, C1L_FORWARD);
     digitalWrite(control2Left, C2L_FORWARD);
@@ -63,14 +58,12 @@ void MotorController::turnRight()
     digitalWrite(control2Right, C2R_BACKWARD);
 }
 
-void MotorController::stop()
-{
+void MotorController::stop() {
     digitalWrite(enableLeft, LOW);
     digitalWrite(enableRight, LOW);
 }
 
-void MotorController::preamble()
-{
+void MotorController::preamble() {
     digitalWrite(enableLeft, LOW);
     digitalWrite(enableRight, LOW);
     delay(DELAY);

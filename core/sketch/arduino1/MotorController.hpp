@@ -1,7 +1,7 @@
 #ifndef MotorController_H
 #define MotorController_H
 
-#include <Arduino.h>
+#include "../common.hpp"
 
 #define DELAY 10
 #define C1L_FORWARD HIGH
@@ -16,7 +16,8 @@
 class MotorController {
 
     public:
-        MotorController(byte eL, byte c1L, byte c2L, byte eR, byte c1R, byte c2R);
+        MotorController(byte eL, byte c1L, byte c2L,
+                        byte eR, byte c1R, byte c2R);
         void moveForward();
         void moveBackward();
         void turnLeft();

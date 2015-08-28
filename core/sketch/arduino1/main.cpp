@@ -1,7 +1,5 @@
-#include <Wire.h>
-
 #include "../common.hpp"
-#include "MotorController.h"
+#include "MotorController.hpp"
 
 int status = STATUS_OK;
 MotorController motorController =

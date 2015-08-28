@@ -1,18 +1,18 @@
 #include <Arduino.h>
+#include <Wire.h>
 
 #define SERVO_X_PIN       10
 #define SERVO_Y_PIN       11
 
-#define ARDUINO1_ADDR     0x04
-#define ARDUINO2_ADDR     0x05
+#define ARDUINO1_ADDR     4
+#define ARDUINO2_ADDR     5
 
-#define SERVO_LEFT_MAX    160
-#define SERVO_RIGHT_MAX   20
+#define SERVO_LEFT_MAX    180
+#define SERVO_RIGHT_MAX   0
 #define SERVO_CENTER      90
-#define SERVO_UP_MAX      160
+#define SERVO_UP_MAX      180
 #define SERVO_DOWN_MAX    70
 #define SERVO_STEP        10
-#define SERVO_INTERVAL    5000
 
 #define EL_PIN            10
 #define ER_PIN            11
@@ -25,12 +25,12 @@
 #define MOVE_BACK         11
 #define MOVE_LEFT         12
 #define MOVE_RIGHT        13
-#define MOVE_STOP		      14
+#define MOVE_STOP		  14
 
-#define PAN_CENTER        20
-#define PAN_LEFT          21
-#define PAN_RIGHT         22
-#define PAN_UP            23
-#define PAN_DOWN          24
+#define LOOK_CENTER        20
+#define LOOK_LEFT          21
+#define LOOK_RIGHT         22
+#define LOOK_UP            23
+#define LOOK_DOWN          24
 
 #define STATUS_OK         42

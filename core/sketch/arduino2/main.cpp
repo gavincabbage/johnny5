@@ -1,31 +1,15 @@
-// arduino2/sketch.cpp
-// servo subsystem
-
-#include <Wire.h>
-#include <Servo.h>
-
 #include "../common.hpp"
+#include "ServoController.hpp"
 
-Servo servo_x, servo_y;
-int servo_x_direction = SERVO_CENTER;
-int servo_y_direction = SERVO_CENTER;
 int status = STATUS_OK;
+ServoController servoController;
 
 void receive_data(int);
 void send_data();
-void servo_left();
-void servo_right();
-void servo_up();
-void servo_down();
-void servo_center();
-void servo_move(Servo, int, int);
 
 void setup()
 {
-    servo_x.attach(SERVO_X_PIN);
-    servo_y.attach(SERVO_Y_PIN);
-    servo_x.write(SERVO_CENTER);
-    servo_y.write(SERVO_CENTER);
+    servoController.init(SERVO_X_PIN, SERVO_Y_PIN);
     Wire.begin(ARDUINO2_ADDR);
     Wire.onReceive(receive_data);
     Wire.onRequest(send_data);
@@ -33,7 +17,7 @@ void setup()
 
 void loop()
 {
-    delay(100);
+    delay(10);
 }
 
 void receive_data(int byteCount)
@@ -42,20 +26,20 @@ void receive_data(int byteCount)
     {
         switch (Wire.read())
         {
-        case PAN_CENTER:
-            servo_center();
+        case LOOK_CENTER:
+            servoController.center();
             break;
-        case PAN_LEFT:
-            servo_left();
+        case LOOK_LEFT:
+            servoController.lookLeft();
             break;
-        case PAN_RIGHT:
-            servo_right();
+        case LOOK_RIGHT:
+            servoController.lookRight();
             break;
-        case PAN_UP:
-            servo_up();
+        case LOOK_UP:
+            servoController.lookUp();
             break;
-        case PAN_DOWN:
-            servo_down();
+        case LOOK_DOWN:
+            servoController.lookDown();
             break;
         }
     }
@@ -64,36 +48,4 @@ void receive_data(int byteCount)
 void send_data()
 {
     Wire.write(status);
-}
-
-void servo_left()
-{
-    servo_move(servo_x, servo_x.read() + SERVO_STEP, SERVO_LEFT_MAX);
-}
-
-void servo_right()
-{
-    servo_move(servo_x, servo_x.read() - SERVO_STEP, SERVO_RIGHT_MAX);
-}
-
-void servo_up()
-{
-    servo_move(servo_y, servo_y.read() + SERVO_STEP, SERVO_UP_MAX);
-}
-
-void servo_down()
-{
-    servo_move(servo_y, servo_y.read() - SERVO_STEP, SERVO_DOWN_MAX);
-}
-
-void servo_move(Servo servo, int newDirection, int max)
-{
-    newDirection = newDirection > max ? max : newDirection;
-    servo.write(newDirection);
-}
-
-void servo_center()
-{
-    servo_x.write(SERVO_CENTER);
-    servo_y.write(SERVO_CENTER);
 }
