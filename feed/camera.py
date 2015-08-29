@@ -37,6 +37,8 @@ from feed import app
 def generate_feed(camera):
     while True:
         frame = camera.get_frame()
+        with open("frame.jpeg", "w") as f:
+            f.write(frame)
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
