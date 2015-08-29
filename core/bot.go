@@ -26,19 +26,23 @@ var (
     arduino1, arduino2 byte = 4, 5
 )
 
-type Bot interface {
-    Move(direction string) error
-    Look(direction string) error
-}
-
 type I2CBus interface {
 	ReadByte(addr byte) (value byte, err error)
 	WriteByte(addr, value byte) error
 	Close() error
 }
 
+type Bot interface {
+    Move(direction string) error
+    Look(direction string) error
+	LedOn(color string) error
+	LedOff(color string) error
+	Close() error
+}
+
 type CoreBot struct {
     bus I2CBus
+	ledPin embd.DigitalPin
 }
 
 func (bot CoreBot) Move(direction string) error {
@@ -55,11 +59,27 @@ func (bot CoreBot) Look(direction string) error {
 	return errors.New("invalid look direction")
 }
 
+func (bot CoreBot) LedOn(color string) error {
+	return bot.ledPin.Write(embd.High)
+}
+
+func (bot CoreBot) LedOff(color string) error {
+	return bot.ledPin.Write(embd.Low)
+}
+
 func (bot CoreBot) Close() error {
-	return nil
+	return embd.CloseGPIO()
 }
 
 func NewCoreBot() CoreBot {
 	b := embd.NewI2CBus(1)
-	return CoreBot{bus: b}
+
+	err := embd.InitGPIO()
+	if err != nil {
+		panic(err)
+	}
+
+	p, _ := embd.NewDigitalPin(18)
+	p.SetDirection(embd.Out)
+	return CoreBot{bus: b, ledPin: p}
 }
