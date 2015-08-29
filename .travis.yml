@@ -5,7 +5,7 @@ go:
   
 install:
   - go get github.com/gorilla/mux
-  - go get github.com/gavincabbage/embd#gavincabbage-readbytes
+  - go get github.com/gavincabbage/embd
   
 env:
   - GOOS=linux GOARCH=arm GOARM=7
