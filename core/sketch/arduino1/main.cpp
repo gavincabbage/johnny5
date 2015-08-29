@@ -47,5 +47,6 @@ void receive_data(int byteCount)
 
 void send_data()
 {
-    Wire.write(status);
+    //Wire.write(status);
+    Wire.write("status report, captain!");
 }

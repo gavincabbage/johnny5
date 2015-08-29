@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"errors"
 	"github.com/kidoman/embd"
 	_ "github.com/kidoman/embd/host/rpi"
@@ -27,6 +28,7 @@ var (
 )
 
 type I2CBus interface {
+	ReadBytes(addr byte, num int) (value []byte, err error)
 	ReadByte(addr byte) (value byte, err error)
 	WriteByte(addr, value byte) error
 	Close() error
@@ -71,6 +73,11 @@ func (bot CoreBot) Close() error {
 	return embd.CloseGPIO()
 }
 
+func (bot CoreBot) Test() {
+	bytes, _ := bot.bus.ReadBytes(arduino1, 10)
+	fmt.Println(string(bytes))
+}
+
 func NewCoreBot() CoreBot {
 	b := embd.NewI2CBus(1)
 
@@ -81,5 +88,6 @@ func NewCoreBot() CoreBot {
 
 	p, _ := embd.NewDigitalPin(18)
 	p.SetDirection(embd.Out)
+
 	return CoreBot{bus: b, ledPin: p}
 }

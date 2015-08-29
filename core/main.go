@@ -67,6 +67,8 @@ func main() {
 
 	bot = NewCoreBot()
 
+	bot.Test()
+
 	defer bot.Close()
 
 	// catch interrupts so we close GPIO on Ctrl-C
