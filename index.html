@@ -28,10 +28,14 @@
 
     <a onclick="distance()">distance</a>
 
+    <br>
+
+    green led: <a onclick="ledOn('green')">on</a> / <a onclick="ledOff('green')">off</a>
+
 </body>
 
 <script>
-function simple_command(command, direction)
+function simple_command(command, direction, method)
 {
     var url = "http://192.168.1.171:8080/" + command + "/" + direction;
     var xmlHttp = new XMLHttpRequest();
@@ -44,18 +48,28 @@ function simple_command(command, direction)
         }
     }
 
-    xmlHttp.open("GET", url, true);
+    xmlHttp.open(method, url, false);
     xmlHttp.send();
 }
 
 function move(direction)
 {
-    simple_command("move", direction);
+    simple_command("move", direction, "GET");
 }
 
 function look(direction)
 {
-    simple_command("look", direction);
+    simple_command("look", direction, "GET");
+}
+
+function ledOn(color)
+{
+    simple_command("leds", color, "POST")
+}
+
+function ledOff(color)
+{
+    simple_command("leds", color, "DELETE")
 }
 
 function distance()
