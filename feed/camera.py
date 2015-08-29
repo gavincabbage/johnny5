@@ -37,8 +37,6 @@ from feed import app
 def generate_feed(camera):
     while True:
         frame = camera.get_frame()
-        with open("frame.jpeg", "wb") as f:
-            f.write(frame)
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
@@ -47,6 +45,7 @@ class Camera(object):
     thread = None  # background thread that reads frames from camera
     frame = None  # current frame is stored here by background thread
     last_access = 0  # time of last client access to the camera
+    last_pic = 0
 
     def initialize(self):
         if Camera.thread is None:
@@ -79,6 +78,11 @@ class Camera(object):
                 stream.seek(0)
                 cls.frame = stream.read()
 
+                if time.time() - cls.last_pic > 10:
+                    cls.last_pic = time.time()
+                    with open("frame"+str(cls.last_pic)+".jpeg", "wb+") as f:
+                        f.write(cls.frame)
+
                 # reset stream for next frame
                 stream.seek(0)
                 stream.truncate()
@@ -87,4 +91,5 @@ class Camera(object):
                 # the last 10 seconds stop the thread
                 if time.time() - cls.last_access > app.config['TIMEOUT']:
                     break
+
         cls.thread = None
