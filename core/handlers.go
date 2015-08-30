@@ -1,7 +1,6 @@
 package main
 
 import (
-    "os"
     "fmt"
     "net/http"
     "github.com/gorilla/mux"
@@ -51,12 +50,4 @@ func distanceHandler(w http.ResponseWriter, r *http.Request) {
 
 func statusHandler(w http.ResponseWriter, r *http.Request) {
     w.WriteHeader(204)
-}
-
-func errorHandler() {
-	fmt.Println("enter errorHandler")
-	if r := recover(); r != nil {
-		fmt.Println(r)
-	}
-	os.Exit(1)
 }

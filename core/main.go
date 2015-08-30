@@ -15,13 +15,9 @@ var (
 
 func main() {
 
-	defer errorHandler()
-
 	bot = NewCoreBot()
-
-	bot.Test()
-
 	defer bot.Close()
+	bot.Test()
 
 	// catch interrupts so we close GPIO on Ctrl-C
 	signalChan := make(chan os.Signal, 1)
