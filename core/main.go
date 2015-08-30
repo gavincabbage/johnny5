@@ -13,54 +13,6 @@ var (
 	hostname, port string = "0.0.0.0", "8080"
 )
 
-func lookHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("enter lookHandler")
-	direction := mux.Vars(r)["direction"]
-	err := bot.Look(direction)
-	if err != nil {
-		w.WriteHeader(500)
-		panic(err)
-	}
-	w.WriteHeader(200)
-}
-
-func moveHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("enter moveHandler")
-	direction := mux.Vars(r)["direction"]
-	err := bot.Move(direction)
-	if err != nil {
-		w.WriteHeader(500)
-		panic(err)
-	}
-	w.WriteHeader(200)
-}
-
-func ledHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("enter ledHandler")
-	color := mux.Vars(r)["color"]
-
-	var err error
-	if r.Method == "POST" {
-		err = bot.LedOn(color)
-	} else if r.Method == "DELETE" {
-		err = bot.LedOff(color)
-	}
-
-	if err != nil {
-		w.WriteHeader(500)
-		panic(err)
-	}
-	w.WriteHeader(200)
-}
-
-func errorHandler() {
-	fmt.Println("enter errorHandler")
-	if r := recover(); r != nil {
-		fmt.Println(r)
-	}
-	os.Exit(1)
-}
-
 func main() {
 
 	defer errorHandler()
@@ -83,9 +35,11 @@ func main() {
 	}()
 
 	router := mux.NewRouter()
-	router.HandleFunc("/look/{direction}", lookHandler).Methods("GET")
-	router.HandleFunc("/move/{direction}", moveHandler).Methods("GET")
-	router.HandleFunc("/leds/{color}", ledHandler).Methods("POST", "DELETE")
+	router.HandleFunc("/look/{direction}", lookHandler).Methods("POST")
+	router.HandleFunc("/move/{direction}", moveHandler).Methods("POST")
+	router.HandleFunc("/leds/{color:(green)}", ledHandler).Methods("POST", "DELETE")
+	router.HandleFunc("/distance", distanceHandler).Methods("GET")
+	router.HandleFunc("/status", statusHandler).Methods("GET")
 	http.Handle("/", router)
 
 	host := hostname + ":" + port

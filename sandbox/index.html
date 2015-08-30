@@ -54,12 +54,12 @@ function simple_command(command, direction, method)
 
 function move(direction)
 {
-    simple_command("move", direction, "GET");
+    simple_command("move", direction, "POST");
 }
 
 function look(direction)
 {
-    simple_command("look", direction, "GET");
+    simple_command("look", direction, "POST");
 }
 
 function ledOn(color)
