@@ -45,7 +45,7 @@ def generate_feed(camera):
     while True:
         frame = camera.get_frame()
         yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+               b'Content-Type: image/png\r\n\r\n' + frame + b'\r\n')
 
 
 class Camera(object):
@@ -73,13 +73,13 @@ class Camera(object):
     def _thread(cls):
         with PiCamera() as camera:
 
-            camera.resolution = (640, 480)
+            camera.resolution = (320, 240)
             camera.hflip = True
             camera.vflip = True
             camera.start_preview()
             time.sleep(2)  # let camera warm up
             #stream = io.BytesIO()
-            stream = PiRGBArray(camera, size=(640, 480))
+            stream = PiRGBArray(camera, size=camera.resolution)
 
             ### IMAGING
             avg = None
@@ -130,6 +130,9 @@ class Camera(object):
                     cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
                     text = "Occupied"
 
+                #if text == "Unoccupied":
+                #    cv2.accumulateWeighted(gray, avg, 0.5)
+
                 ts = timestamp.strftime("%A %d %B %y %I:%M:%S%p")
                 cv2.putText(frame, "Status: {}".format(text), (10, 20),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
@@ -140,7 +143,7 @@ class Camera(object):
                 #cls.frame = frame
                 #cls.last_pic = time.time()
                 #cv2.imwrite("frame"+str(cls.last_pic)+".jpeg", frame)
-                cls.frame = cv2.imencode(".jpeg", frame)[1].tostring()
+                cls.frame = cv2.imencode(".png", frame)[1].tostring()
                 ### END IMAGING
 
                 # reset stream for next frame

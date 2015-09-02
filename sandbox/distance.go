@@ -16,7 +16,7 @@ func main() {
 		panic(err)
 	}
 
-    trigPin, err := embd.NewDigitalPin(27)
+    trigPin, err := embd.NewDigitalPin(20)
 	if err != nil {
 		panic(err)
 	}
@@ -26,13 +26,14 @@ func main() {
 		panic(err)
 	}
 
-    echoPin, err := embd.NewDigitalPin(22)
+    echoPin, err := embd.NewDigitalPin(21)
 	if err != nil {
 		panic(err)
 	}
 	echoPin.SetDirection(embd.In)
 
     time.Sleep(2 * time.Second)
+    
     fmt.Println("Triggering measurement...")
 
     err = trigPin.Write(embd.High)
@@ -65,7 +66,8 @@ func main() {
 
     duration := endTime.Sub(startTime).Seconds()
 
-    fmt.Println("Result: ", duration)
+    fmt.Println("Duration: ", duration)
+    fmt.Println("Distance: ", duration * 17150)
 
     fmt.Println("Closing GPIO...")
     embd.CloseGPIO()
