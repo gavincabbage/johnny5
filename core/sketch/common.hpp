@@ -14,12 +14,12 @@
 #define SERVO_DOWN_MAX    70
 #define SERVO_STEP        10
 
-#define EL_PIN            10
-#define ER_PIN            11
-#define C1L_PIN           8
-#define C2L_PIN           9
-#define C1R_PIN           12
-#define C2R_PIN           13
+#define EL_PIN            9
+#define ER_PIN            10
+#define C1L_PIN           7
+#define C2L_PIN           8
+#define C1R_PIN           11
+#define C2R_PIN           12
 
 #define MOVE_FORWARD      10
 #define MOVE_BACK         11
