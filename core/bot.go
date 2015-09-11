@@ -45,6 +45,9 @@ type Bot interface {
 type CoreBot struct {
     bus I2CBus
 	ledPin embd.DigitalPin
+	leftDistanceSensor CoreDistanceSensor
+	rightDistanceSensor CoreDistanceSensor
+	centerDistanceSensor CoreDistanceSensor
 }
 
 func (bot CoreBot) Move(direction string) error {
@@ -86,8 +89,15 @@ func NewCoreBot() CoreBot {
 		panic(err)
 	}
 
-	p, _ := embd.NewDigitalPin(18)
+	p, _ := embd.NewDigitalPin(17)
 	p.SetDirection(embd.Out)
 
-	return CoreBot{bus: b, ledPin: p}
+	leftSensor := NewCoreDistanceSensor(25, 14)
+	centerSensor := NewCoreDistanceSensor(8, 15)
+	rightSensor := NewCoreDistanceSensor(7, 23)
+
+	return CoreBot{bus: b, ledPin: p,
+			leftDistanceSensor: leftSensor,
+			centerDistanceSensor: centerSensor,
+			rightDistanceSensor: rightSensor}
 }
