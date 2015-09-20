@@ -1,5 +1,9 @@
-core/sketch/arduino1/build-pro5v328/
-core/sketch/arduino2/build-pro5v328/
+core/sketch/*/build-*
 core/core
+sandbox/a.out
 feed/venv/
 *.tgz
+web/node_modules
+web/bower_components
+web/public/dist
+web/public/libs
