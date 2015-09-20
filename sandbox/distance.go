@@ -16,62 +16,91 @@ func main() {
 		panic(err)
 	}
 
-    trigPin, err := embd.NewDigitalPin(20)
+    trigPin, err := embd.NewDigitalPin(2)
 	if err != nil {
 		panic(err)
 	}
 	trigPin.SetDirection(embd.Out)
-    err = trigPin.Write(embd.Low)
-	if err != nil {
-		panic(err)
-	}
 
-    echoPin, err := embd.NewDigitalPin(21)
-	if err != nil {
-		panic(err)
-	}
-	echoPin.SetDirection(embd.In)
-
-    time.Sleep(2 * time.Second)
-    
-    fmt.Println("Triggering measurement...")
-
-    err = trigPin.Write(embd.High)
-	if err != nil {
-		panic(err)
-	}
-
-    time.Sleep(10 * time.Microsecond)
-
-    err = trigPin.Write(embd.Low)
-    if err != nil {
-        panic(err)
-    }
-
-    fmt.Println("Reading result...")
-
-    startTime := time.Now()
-    e, _ := echoPin.Read()
-    for e == embd.Low {
-        startTime = time.Now()
-        e, _ = echoPin.Read()
-    }
-
-    endTime := time.Now()
-    e, _ = echoPin.Read()
-    for e == embd.High {
-        endTime = time.Now()
-        e, _ = echoPin.Read()
-    }
-
-    duration := endTime.Sub(startTime).Seconds()
-
-    fmt.Println("Duration: ", duration)
-    fmt.Println("Distance: ", duration * 17150)
-
-    fmt.Println("Closing GPIO...")
+    trigPin.Write(embd.High)
+    time.Sleep(time.Second)
+    trigPin.Write(embd.Low)
+    time.Sleep(time.Second)
+    fmt.Println(".")
+    trigPin.Write(embd.High)
+    time.Sleep(time.Second)
+    trigPin.Write(embd.Low)
+    time.Sleep(time.Second)
+    fmt.Println(".")
+    trigPin.Write(embd.High)
+    time.Sleep(time.Second)
+    trigPin.Write(embd.Low)
+    time.Sleep(time.Second)
+    fmt.Println(".")
+    trigPin.Write(embd.High)
+    time.Sleep(time.Second)
+    trigPin.Write(embd.Low)
+    time.Sleep(time.Second)
+    fmt.Println(".")
+    trigPin.Write(embd.High)
+    time.Sleep(time.Second)
+    trigPin.Write(embd.Low)
+    time.Sleep(time.Second)
+    trigPin.Write(embd.High)
+    time.Sleep(time.Second)
+    trigPin.Write(embd.Low)
+    time.Sleep(time.Second)
+    trigPin.Write(embd.High)
+    time.Sleep(time.Second)
+    trigPin.Write(embd.Low)
+    time.Sleep(time.Second)
+    //
+    // echoPin, err := embd.NewDigitalPin(18)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// echoPin.SetDirection(embd.In)
+    //
+    // time.Sleep(2 * time.Second)wd
+    //
+    // fmt.Println("Triggering measurement...")
+    //
+    // err = trigPin.Write(embd.High)
+	// if err != nil {
+	// 	panic(err)
+	// }
+    //
+    // time.Sleep(10 * time.Microsecond)
+    //
+    // err = trigPin.Write(embd.Low)
+    // if err != nil {
+    //     panic(err)
+    // }
+    //
+    // fmt.Println("Reading result...")
+    //
+    // startTime := time.Now()
+    // e, _ := echoPin.Read()
+    // for e == embd.Low {
+    //     startTime = time.Now()
+    //     e, _ = echoPin.Read()
+    // }
+    //
+    // endTime := time.Now()
+    // e, _ = echoPin.Read()
+    // for e == embd.High {
+    //     endTime = time.Now()
+    //     e, _ = echoPin.Read()
+    // }
+    //
+    // duration := endTime.Sub(startTime).Seconds()
+    //
+    // fmt.Println("Duration: ", duration)
+    // fmt.Println("Distance: ", duration * 17150)
+    //
+    // fmt.Println("Closing GPIO...")
     embd.CloseGPIO()
-
-    fmt.Println("Done.")
+    //
+    // fmt.Println("Done.")
 
 }
