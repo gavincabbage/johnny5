@@ -4,7 +4,7 @@ angular.module('app')
 	$scope.mainController = this;
 
 	socket.emit('ready');
-	
+
 	socket.on('talk', function(data) {
 		$log.log(data.message);
 	});

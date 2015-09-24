@@ -6,12 +6,12 @@
 		return {
 			exampleHttpGetService : function() {
 				return $http({
-             url: '/api/regions',
-             method: 'GET',
-             headers: {
-                 'Content-Type': 'application/json',
-             }
-         });
+					url: '/api/regions',
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json',
+					}
+				});
 			}
 		};
 	}]);
