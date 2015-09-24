@@ -4,20 +4,23 @@ import (
 	"os"
 	"os/signal"
 	"fmt"
-	"net/http"
-	"github.com/gorilla/mux"
+	"github.com/garyburd/redigo/redis"
+)
+
+const (
+	 redisAddress string = "127.0.0.1:6379"
 )
 
 var (
 	bot CoreBot
-	hostname, port string = "0.0.0.0", "8080"
+	redisConn redis.Conn
+	redisSub redis.PubSubConn
 )
 
 func main() {
 
 	bot = NewCoreBot()
 	defer bot.Close()
-	bot.Test()
 
 	// catch interrupts so we close GPIO on Ctrl-C
 	signalChan := make(chan os.Signal, 1)
@@ -30,14 +33,32 @@ func main() {
 		}
 	}()
 
-	router := mux.NewRouter()
-	router.HandleFunc("/look/{direction}", lookHandler).Methods("POST")
-	router.HandleFunc("/move/{direction}", moveHandler).Methods("POST")
-	router.HandleFunc("/leds/{color:(green)}", ledHandler).Methods("POST", "DELETE")
-	router.HandleFunc("/distance", distanceHandler).Methods("GET")
-	router.HandleFunc("/status", statusHandler).Methods("GET")
-	http.Handle("/", router)
+	redisConn, err := redis.Dial("tcp", redisAddress)
+	if err != nil {
+		panic(err)
+	}
+	defer redisConn.Close()
 
-	host := hostname + ":" + port
-	http.ListenAndServe(host, router)
+	redisSubConn, err := redis.Dial("tcp", redisAddress)
+	if err != nil {
+		panic(err)
+	}
+	redisSub = redis.PubSubConn{Conn: redisSubConn}
+	defer redisSub.Close()
+
+	fmt.Println("Arduino status: ", string(bot.ArduinoStatus()))
+
+	redisSub.Subscribe("testchan")
+
+	fmt.Println("Entering main loop")
+	for {
+		switch msg := redisSub.Receive().(type) {
+		case redis.Message:
+			fmt.Println("got redis message: ", string(msg.Data))
+		case error:
+			panic(msg)
+		default:
+			fmt.Println("default")
+		}
+	}
 }

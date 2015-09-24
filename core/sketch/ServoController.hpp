@@ -1,7 +1,7 @@
 #ifndef ServoController_H
 #define ServoController_H
 
-#include "../common.hpp"
+#include "common.hpp"
 #include <Servo.h>
 
 class ServoController {

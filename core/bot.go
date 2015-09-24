@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"errors"
 	"github.com/kidoman/embd"
 	_ "github.com/kidoman/embd/host/rpi"
@@ -24,7 +23,7 @@ var lookCodes map[string]byte = map[string]byte{
 }
 
 var (
-    arduino1, arduino2 byte = 4, 5
+    arduino byte = 4
 )
 
 type I2CBus interface {
@@ -52,14 +51,14 @@ type CoreBot struct {
 
 func (bot CoreBot) Move(direction string) error {
 	if code, valid := moveCodes[direction]; valid {
-		return bot.bus.WriteByte(arduino1, code)
+		return bot.bus.WriteByte(arduino, code)
 	}
 	return errors.New("invalid move direction")
 }
 
 func (bot CoreBot) Look(direction string) error {
 	if code, valid := lookCodes[direction]; valid {
-		return bot.bus.WriteByte(arduino2, code)
+		return bot.bus.WriteByte(arduino, code)
 	}
 	return errors.New("invalid look direction")
 }
@@ -76,9 +75,12 @@ func (bot CoreBot) Close() error {
 	return embd.CloseGPIO()
 }
 
-func (bot CoreBot) Test() {
-	bytes, _ := bot.bus.ReadBytes(arduino1, 10)
-	fmt.Println(string(bytes))
+func (bot CoreBot) ArduinoStatus() []byte {
+	bytes, err := bot.bus.ReadBytes(arduino, 10)
+	if err != nil {
+		panic(err)
+	}
+	return bytes
 }
 
 func NewCoreBot() CoreBot {

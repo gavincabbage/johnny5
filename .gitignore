@@ -1,6 +1,7 @@
-core/sketch/*/build-*
+core/sketch/build-pro5v328
 core/core
-sandbox/a.out
+core/main
+*/a.out
 feed/venv/
 *.tgz
 web/node_modules

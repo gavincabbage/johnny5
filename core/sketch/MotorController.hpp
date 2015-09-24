@@ -1,7 +1,7 @@
 #ifndef MotorController_H
 #define MotorController_H
 
-#include "../common.hpp"
+#include "common.hpp"
 
 #define DELAY 10
 #define C1L_FORWARD HIGH
