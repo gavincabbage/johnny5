@@ -13,52 +13,63 @@ const (
 
 var (
 	bot CoreBot
-	redisConn redis.Conn
-	redisSub redis.PubSubConn
 )
+
+func signalHandler(signalChan chan os.Signal) {
+	for _ = range signalChan {
+		fmt.Println("Received an interrupt, stopping...")
+		bot.Close()
+		os.Exit(0)
+	}
+}
+
+func newRedisConnection(redisAddress string) redis.Conn {
+	c, err := redis.Dial("tcp", redisAddress)
+	if err != nil {
+		panic(err)
+	}
+	return c
+}
+
+func listenToSubscriptions(subChan chan string, redisSubConn redis.PubSubConn) {
+	for {
+		switch msg := redisSubConn.Receive().(type) {
+		case redis.Message:
+			subChan <- string(msg.Data)
+		case error:
+			panic(msg)
+		}
+	}
+}
 
 func main() {
 
 	bot = NewCoreBot()
 	defer bot.Close()
 
-	// catch interrupts so we close GPIO on Ctrl-C
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan, os.Interrupt)
-	go func() {
-		for _ = range signalChan {
-			fmt.Println("Received an interrupt, stopping...")
-			bot.Close()
-			os.Exit(0)
-		}
-	}()
+	go signalHandler(signalChan)
 
-	redisConn, err := redis.Dial("tcp", redisAddress)
-	if err != nil {
-		panic(err)
-	}
+	redisConn := newRedisConnection(redisAddress)
 	defer redisConn.Close()
 
-	redisSubConn, err := redis.Dial("tcp", redisAddress)
-	if err != nil {
-		panic(err)
-	}
-	redisSub = redis.PubSubConn{Conn: redisSubConn}
-	defer redisSub.Close()
+	redisConn2 := newRedisConnection(redisAddress)
+	redisSubConn := redis.PubSubConn{Conn: redisConn2}
+	defer redisSubConn.Close()
 
 	fmt.Println("Arduino status: ", string(bot.ArduinoStatus()))
 
-	redisSub.Subscribe("testchan")
+	redisSubConn.Subscribe("testchan")
 
 	fmt.Println("Entering main loop")
+
+	subChan := make(chan string)
+	go listenToSubscriptions(subChan, redisSubConn)
 	for {
-		switch msg := redisSub.Receive().(type) {
-		case redis.Message:
-			fmt.Println("got redis message: ", string(msg.Data))
-		case error:
-			panic(msg)
-		default:
-			fmt.Println("default")
+		select {
+		case data := <-subChan:
+			fmt.Println("received message on subchan: ", data)
 		}
 	}
 }
