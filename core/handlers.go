@@ -1,16 +1,18 @@
 package main
 
 import (
-    "fmt"
-    "net/http"
-    "github.com/gorilla/mux"
+	"fmt"
+
+	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 func lookHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("enter lookHandler")
 	direction := mux.Vars(r)["direction"]
 	err := bot.Look(direction)
-    statusCode := 200
+	statusCode := 200
 	if err != nil {
 		statusCode = 500
 	}
@@ -21,7 +23,7 @@ func moveHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("enter moveHandler")
 	direction := mux.Vars(r)["direction"]
 	err := bot.Move(direction)
-    statusCode := 200
+	statusCode := 200
 	if err != nil {
 		statusCode = 500
 	}
@@ -37,7 +39,7 @@ func ledHandler(w http.ResponseWriter, r *http.Request) {
 	} else if r.Method == "DELETE" {
 		err = bot.LedOff(color)
 	}
-    statusCode := 200
+	statusCode := 200
 	if err != nil {
 		statusCode = 500
 	}
@@ -45,9 +47,9 @@ func ledHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func distanceHandler(w http.ResponseWriter, r *http.Request) {
-    w.WriteHeader(204)
+	w.WriteHeader(204)
 }
 
 func statusHandler(w http.ResponseWriter, r *http.Request) {
-    w.WriteHeader(204)
+	w.WriteHeader(204)
 }

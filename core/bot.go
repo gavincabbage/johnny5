@@ -2,28 +2,29 @@ package main
 
 import (
 	"errors"
+
 	"github.com/kidoman/embd"
 	_ "github.com/kidoman/embd/host/rpi"
 )
 
 var moveCodes map[string]byte = map[string]byte{
-	"forward" : 10,
-	"back" : 11,
-	"left" : 12,
-	"right" : 13,
-	"stop" : 14,
+	"forward": 10,
+	"back":    11,
+	"left":    12,
+	"right":   13,
+	"stop":    14,
 }
 
 var lookCodes map[string]byte = map[string]byte{
-	"center" : 20,
-	"left" : 21,
-	"right" : 22,
-	"up" : 23,
-	"down" : 24,
+	"center": 20,
+	"left":   21,
+	"right":  22,
+	"up":     23,
+	"down":   24,
 }
 
 var (
-    arduino byte = 4
+	arduino byte = 4
 )
 
 type I2CBus interface {
@@ -34,18 +35,19 @@ type I2CBus interface {
 }
 
 type Bot interface {
-    Move(direction string) error
-    Look(direction string) error
+	Move(direction string) error
+	Stop() error
+	Look(direction string) error
 	LedOn(color string) error
 	LedOff(color string) error
 	Close() error
 }
 
 type CoreBot struct {
-    bus I2CBus
-	ledPin embd.DigitalPin
-	leftDistanceSensor CoreDistanceSensor
-	rightDistanceSensor CoreDistanceSensor
+	bus                  I2CBus
+	ledPin               embd.DigitalPin
+	leftDistanceSensor   CoreDistanceSensor
+	rightDistanceSensor  CoreDistanceSensor
 	centerDistanceSensor CoreDistanceSensor
 }
 
@@ -54,6 +56,10 @@ func (bot CoreBot) Move(direction string) error {
 		return bot.bus.WriteByte(arduino, code)
 	}
 	return errors.New("invalid move direction")
+}
+
+func (bot CoreBot) Stop() error {
+	return bot.Move("stop")
 }
 
 func (bot CoreBot) Look(direction string) error {
@@ -83,6 +89,25 @@ func (bot CoreBot) ArduinoStatus() []byte {
 	return bytes
 }
 
+func (bot CoreBot) SenseDistance() (float64, float64, float64) {
+	leftDistance, err := bot.leftDistanceSensor.Sense()
+	if err != nil {
+		panic(err)
+	}
+
+	centerDistance, err := bot.centerDistanceSensor.Sense()
+	if err != nil {
+		panic(err)
+	}
+
+	rightDistance, err := bot.rightDistanceSensor.Sense()
+	if err != nil {
+		panic(err)
+	}
+
+	return leftDistance, centerDistance, rightDistance
+}
+
 func NewCoreBot() CoreBot {
 	b := embd.NewI2CBus(1)
 
@@ -99,7 +124,7 @@ func NewCoreBot() CoreBot {
 	rightSensor := NewCoreDistanceSensor(7, 23)
 
 	return CoreBot{bus: b, ledPin: p,
-			leftDistanceSensor: leftSensor,
-			centerDistanceSensor: centerSensor,
-			rightDistanceSensor: rightSensor}
+		leftDistanceSensor:   leftSensor,
+		centerDistanceSensor: centerSensor,
+		rightDistanceSensor:  rightSensor}
 }
