@@ -3,10 +3,9 @@ var redis = require('redis');
 
 var app = express();
 app.http().io();
-var port = 8080;
+port = 8080;
 
-var redisClient = redis.createClient();
-var redis_port = 6379;
+app.redisClient = redis.createClient();
 
 app.io.route('ready', function(req) {
     req.io.emit('talk', {
@@ -14,14 +13,14 @@ app.io.route('ready', function(req) {
     });
 });
 
-redisClient.on('message', function(channel, message) {
+app.redisClient.on('message', function(channel, message) {
     console.log('got a message on channel ' + channel);
     app.io.broadcast('talk', {
         message: 'redis: ' + message
     });
 });
 
-redisClient.subscribe('mychan');
+app.redisClient.subscribe('mychan');
 
 app.use(express.static(__dirname + '/public'));
 require('./server/routes')(app);
