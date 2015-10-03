@@ -4,7 +4,7 @@ module.exports = function(grunt) {
   grunt.initConfig({
 
     jshint: {
-      all: ['public/src/js/**/*.js'] 
+      all: ['public/src/js/**/*.js']
     },
 
     // take all the js files and minify them into app.min.js
@@ -67,7 +67,7 @@ module.exports = function(grunt) {
       tasks: ['nodemon', 'watch']
     },
 
-    karma: {  
+    karma: {
       unit: {
         options: {
           frameworks: ['jasmine'],
@@ -77,7 +77,6 @@ module.exports = function(grunt) {
             'public/libs/angular/angular.js',
             'public/libs/angular-route/angular-route.js',
             'public/libs/angular-mocks/angular-mocks.js',
-            'public/libs/json-tree/json-tree.js',
             'public/src/js/**/*.js'
           ],
           reporters: ['progress', 'coverage'],
