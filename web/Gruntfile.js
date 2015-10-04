@@ -88,6 +88,18 @@ module.exports = function(grunt) {
           preprocessors: { 'public/src/js/**/!(*test).js': ['coverage'] }
         }
       }
+    },
+
+    preprocess : {
+      options: {
+        context : {
+          RELOAD: true
+        }
+      },
+      html : {
+          src: "public/index.pre.html",
+          dest: "public/index.html"
+      }
     }
 
   });
@@ -99,10 +111,12 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-nodemon');
   grunt.loadNpmTasks('grunt-concurrent');
   grunt.loadNpmTasks('grunt-karma');
+  grunt.loadNpmTasks('grunt-preprocess');
 
   grunt.registerTask('dist', ['cssmin', 'jshint', 'uglify']);
   grunt.registerTask('serve', ['dist', 'concurrent']);
   grunt.registerTask('test', ['jshint', 'karma']);
   grunt.registerTask('default', ['dist', 'test']);
+  grunt.registerTask('process', ['preprocess'])
 
 };

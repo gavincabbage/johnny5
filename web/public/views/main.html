@@ -2,7 +2,7 @@
 	<img id="feed" src="http://192.168.1.171:9090/feed">
 	<div id="move-controls">
 		<button ng-repeat="dir in mainController.moveDirections" id="move-{{dir}}-button"
-				ng-click="mainController.move(dir)">{{dir}}</button>
+				ng-mousedown="mainController.move(dir)" ng-mouseup="mainController.move('stop')">{{dir}}</button>
 	</div>
 	<div id="look-controls">
 		<button ng-repeat="dir in mainController.lookDirections" id="look-{{dir}}-button"
