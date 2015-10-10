@@ -1,3 +1,16 @@
-<div ng-init="mainController.init()">
-	<h1>hello, world!</h1>
+<div class="container" ng-init="mainController.init()">
+	<img id="feed" src="http://192.168.1.171:9090/feed">
+	<div id="move-controls">
+		<button ng-repeat="dir in mainController.moveDirections" id="move-{{dir}}-button"
+				ng-mousedown="mainController.move(dir)" ng-mouseup="mainController.move('stop')">{{dir}}</button>
+	</div>
+	<div id="look-controls">
+		<button ng-repeat="dir in mainController.lookDirections" id="look-{{dir}}-button"
+				ng-click="mainController.look(dir)">{{dir}}</button>
+	</div>
+	<div id="sensor-readings">
+		<p>left distance: {{mainController.leftDistance | number : 2}} cm</p>
+		<p>front distance: {{mainController.frontDistance | number : 2}} cm</p>
+		<p>right distance: {{mainController.rightDistance | number : 2}} cm</p>
+	</div>
 </div>

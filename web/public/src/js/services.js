@@ -2,20 +2,6 @@
 
 	var app = angular.module('app');
 
-	app.factory('appServices', ['$http', function($http) {
-		return {
-			exampleHttpGetService : function() {
-				return $http({
-					url: '/api/regions',
-					method: 'GET',
-					headers: {
-						'Content-Type': 'application/json',
-					}
-				});
-			}
-		};
-	}]);
-
 	app.factory('socket', ['$rootScope', function($rootScope) {
 		var socket = io.connect();
 		return {
