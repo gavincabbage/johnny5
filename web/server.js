@@ -13,9 +13,19 @@ app.redisSubscriber.on('message', function(channel, message) {
     app.io.broadcast('talk', {
         message: 'redis: ' + message
     });
+    app.io.broadcast(channel, {
+        message: message
+    });
+    var channelPath = channel.split(".");
+    console.log(channelPath);
 });
 
-app.redisSubscriber.subscribe('mychan');
+var redisSubscriptions = ['mychan', 'distance.left', 'distance.right', 'distance.center'];
+for (ndx in redisSubscriptions) {
+    var chan = redisSubscriptions[ndx];
+    console.log('subscribing to ' + chan);
+    app.redisSubscriber.subscribe(chan);
+}
 
 app.use(express.static(__dirname + '/public'));
 require('./server/routes')(app);

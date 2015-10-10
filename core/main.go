@@ -66,13 +66,20 @@ func processMessage(msg redis.Message) string {
 func publishDistanceMeasurements() {
 	for {
 		time.Sleep(1 * time.Second)
-		leftDistance, centerDistance, _ := bot.SenseDistance()
+		leftDistance, centerDistance, rightDistance := bot.SenseDistance()
 		if centerDistance < 3.0 {
 			bot.Stop()
 		}
+		// TODO fix this crap
 		leftDistanceStr := strconv.FormatFloat(leftDistance, 'f', 2, 64)
+		centerDistanceStr := strconv.FormatFloat(centerDistance, 'f', 2, 64)
+		rightDistanceStr := strconv.FormatFloat(rightDistance, 'f', 2, 64)
 		fmt.Println("leftDistanceString =", leftDistanceStr)
+		fmt.Println("centerDistanceString =", centerDistanceStr)
+		fmt.Println("rightDistanceString =", rightDistanceStr)
 		redisConn.Do("PUBLISH", "distance.left", leftDistanceStr)
+		redisConn.Do("PUBLISH", "distance.center", centerDistanceStr)
+		redisConn.Do("PUBLISH", "distance.right", rightDistanceStr)
 	}
 }
 
