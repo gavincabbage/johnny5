@@ -12,6 +12,7 @@ import (
 
 const (
 	redisAddress string = "127.0.0.1:6379"
+	measurementPrecision int = 2
 )
 
 var (
@@ -63,23 +64,25 @@ func processMessage(msg redis.Message) string {
 	}
 }
 
-func publishDistanceMeasurements() {
+type redisMessage struct {
+	channel string
+	data string
+}
+
+func publishToRedis(pubChan chan redisMessage) {
+	for {
+		message := <-pubChan
+		redisConn.Do("PUBLISH", message.channel, message.data)
+	}
+}
+
+func publishMeasurements(channel string, fn func() float64, pubChan chan redisMessage) {
 	for {
 		time.Sleep(1 * time.Second)
-		leftDistance, centerDistance, rightDistance := bot.SenseDistance()
-		if centerDistance < 3.0 {
-			bot.Stop()
-		}
-		// TODO fix this crap
-		leftDistanceStr := strconv.FormatFloat(leftDistance, 'f', 2, 64)
-		centerDistanceStr := strconv.FormatFloat(centerDistance, 'f', 2, 64)
-		rightDistanceStr := strconv.FormatFloat(rightDistance, 'f', 2, 64)
-		fmt.Println("leftDistanceString =", leftDistanceStr)
-		fmt.Println("centerDistanceString =", centerDistanceStr)
-		fmt.Println("rightDistanceString =", rightDistanceStr)
-		redisConn.Do("PUBLISH", "distance.left", leftDistanceStr)
-		redisConn.Do("PUBLISH", "distance.center", centerDistanceStr)
-		redisConn.Do("PUBLISH", "distance.right", rightDistanceStr)
+		measurement := fn()
+		measurementStr := strconv.FormatFloat(measurement, 'f', measurementPrecision, 64)
+		fmt.Println("publishing measurement:", channel, ":", measurementStr)
+		pubChan <- redisMessage{channel: channel, data: measurementStr}
 	}
 }
 
@@ -99,11 +102,6 @@ func main() {
 
 	fmt.Println("arduino status: ", string(bot.ArduinoStatus()))
 
-	leftDistance, centerDistance, rightDistance := bot.SenseDistance()
-	fmt.Println("left distance: ", leftDistance)
-	fmt.Println("center distance: ", centerDistance)
-	fmt.Println("right distance: ", rightDistance)
-
 	for _, sub := range subscriptions {
 		fmt.Println("subscribing to ", sub)
 		redisSubConn.Subscribe(sub)
@@ -111,8 +109,12 @@ func main() {
 
 	fmt.Println("entering main loop")
 	subChan := make(chan string)
+	pubChan := make(chan redisMessage)
 	go listenToSubscriptions(subChan, redisSubConn)
-	go publishDistanceMeasurements()
+	go publishToRedis(pubChan)
+	go publishMeasurements("distance.left", bot.SenseLeftDistance, pubChan)
+	go publishMeasurements("distance.right", bot.SenseRightDistance, pubChan)
+	go publishMeasurements("distance.center", bot.SenseCenterDistance, pubChan)
 	for {
 		select {
 		case data := <-subChan:

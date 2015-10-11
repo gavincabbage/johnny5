@@ -31,20 +31,31 @@ func (sensor CoreDistanceSensor) Sense() (float64, error) {
 	}
 
 	startTime := time.Now()
+	holdTime := startTime
+	holdDuration := startTime.Sub(holdTime).Seconds()
 	e, _ := sensor.echoPin.Read()
 	for e == embd.Low {
 		startTime = time.Now()
+		holdDuration = startTime.Sub(holdTime).Seconds()
+		if holdDuration > 1.0 {
+			break
+		}
 		e, _ = sensor.echoPin.Read()
 	}
 
 	endTime := time.Now()
+	duration := endTime.Sub(startTime).Seconds()
 	e, _ = sensor.echoPin.Read()
 	for e == embd.High {
 		endTime = time.Now()
+		duration = endTime.Sub(startTime).Seconds()
+		if duration > 1.0 {
+			break
+		}
 		e, _ = sensor.echoPin.Read()
 	}
 
-	duration := endTime.Sub(startTime).Seconds()
+	duration = endTime.Sub(startTime).Seconds()
 	distance := duration * 17150
 
 	return distance, nil

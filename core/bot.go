@@ -24,12 +24,12 @@ var lookCodes map[string]byte = map[string]byte{
 }
 
 var (
-	arduino byte = 4
+	arduinoAddr byte = 4
 )
 
 type I2CBus interface {
-	ReadBytes(addr byte, num int) (value []byte, err error)
-	ReadByte(addr byte) (value byte, err error)
+	ReadByte(addr byte) (byte, error)
+	ReadBytes(addr byte, num int) ([]byte, error)
 	WriteByte(addr, value byte) error
 	Close() error
 }
@@ -53,7 +53,7 @@ type CoreBot struct {
 
 func (bot CoreBot) Move(direction string) error {
 	if code, valid := moveCodes[direction]; valid {
-		return bot.bus.WriteByte(arduino, code)
+		return bot.bus.WriteByte(arduinoAddr, code)
 	}
 	return errors.New("invalid move direction")
 }
@@ -64,7 +64,7 @@ func (bot CoreBot) Stop() error {
 
 func (bot CoreBot) Look(direction string) error {
 	if code, valid := lookCodes[direction]; valid {
-		return bot.bus.WriteByte(arduino, code)
+		return bot.bus.WriteByte(arduinoAddr, code)
 	}
 	return errors.New("invalid look direction")
 }
@@ -82,30 +82,32 @@ func (bot CoreBot) Close() error {
 }
 
 func (bot CoreBot) ArduinoStatus() []byte {
-	bytes, err := bot.bus.ReadBytes(arduino, 10)
+	bytes, err := bot.bus.ReadBytes(arduinoAddr, 10)
 	if err != nil {
 		panic(err)
 	}
 	return bytes
 }
 
-func (bot CoreBot) SenseDistance() (float64, float64, float64) {
-	leftDistance, err := bot.leftDistanceSensor.Sense()
+func (bot CoreBot) senseDistance(sensor DistanceSensor) float64 {
+	distance, err := sensor.Sense()
 	if err != nil {
 		panic(err)
 	}
 
-	centerDistance, err := bot.centerDistanceSensor.Sense()
-	if err != nil {
-		panic(err)
-	}
+	return distance
+}
 
-	rightDistance, err := bot.rightDistanceSensor.Sense()
-	if err != nil {
-		panic(err)
-	}
+func (bot CoreBot) SenseLeftDistance() float64 {
+	return bot.senseDistance(bot.leftDistanceSensor)
+}
 
-	return leftDistance, centerDistance, rightDistance
+func (bot CoreBot) SenseRightDistance() float64 {
+	return bot.senseDistance(bot.rightDistanceSensor)
+}
+
+func (bot CoreBot) SenseCenterDistance() float64 {
+	return bot.senseDistance(bot.centerDistanceSensor)
 }
 
 func NewCoreBot() CoreBot {
