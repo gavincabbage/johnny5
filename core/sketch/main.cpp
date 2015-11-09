@@ -13,7 +13,7 @@ void send_data();
 void setup()
 {
     servoController.init(SERVO_X_PIN, SERVO_Y_PIN);
-    Wire.begin(ARDUINO1_ADDR);
+    Wire.begin(ARDUINO_ADDR);
     Wire.onReceive(receive_data);
     Wire.onRequest(send_data);
 }

@@ -22,6 +22,12 @@ var (
 	subscriptions = [3]string{"test", "move", "look"}
 )
 
+func fatal(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
+
 func signalHandler(signalChan chan os.Signal) {
 	for _ = range signalChan {
 		fmt.Println("Received an interrupt, stopping...")
@@ -32,9 +38,7 @@ func signalHandler(signalChan chan os.Signal) {
 
 func newRedisConnection(redisAddress string) redis.Conn {
 	c, err := redis.Dial("tcp", redisAddress)
-	if err != nil {
-		panic(err)
-	}
+	fatal(err)
 	return c
 }
 
@@ -72,17 +76,31 @@ type redisMessage struct {
 func publishToRedis(pubChan chan redisMessage) {
 	for {
 		message := <-pubChan
+		fmt.Println("publishing message <" + message.data + "> on channel <" + message.channel + ">")
 		redisConn.Do("PUBLISH", message.channel, message.data)
 	}
 }
 
 func publishMeasurements(channel string, fn func() float64, pubChan chan redisMessage) {
 	for {
-		time.Sleep(1 * time.Second)
+		time.Sleep(30 * time.Second)
 		measurement := fn()
 		measurementStr := strconv.FormatFloat(measurement, 'f', measurementPrecision, 64)
-		fmt.Println("publishing measurement:", channel, ":", measurementStr)
 		pubChan <- redisMessage{channel: channel, data: measurementStr}
+	}
+}
+
+func mouseOdometer() {
+	fmt.Println("Mouse odometer engaged")
+	f, err := os.Open("/dev/input/mice")
+	fatal(err)
+
+	readBuffer := make([]byte, 3)
+
+	for {
+		_, err := f.Read(readBuffer)
+		fatal(err)
+		//fmt.Println("mouse: x = ", int8(readBuffer[1]), ", y = ", int8(readBuffer[2]))
 	}
 }
 
@@ -115,6 +133,8 @@ func main() {
 	go publishMeasurements("distance.left", bot.SenseLeftDistance, pubChan)
 	go publishMeasurements("distance.right", bot.SenseRightDistance, pubChan)
 	go publishMeasurements("distance.center", bot.SenseCenterDistance, pubChan)
+	go mouseOdometer()
+	go bot.RunMag()
 	for {
 		select {
 		case data := <-subChan:

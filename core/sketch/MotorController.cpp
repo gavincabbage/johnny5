@@ -17,6 +17,7 @@ MotorController::MotorController(byte eL, byte c1L, byte c2L, byte eR, byte c1R,
     enableRight = eR;
     control1Right = c1R;
     control2Right = c2R;
+    speed = 255;
 
     pinMode(enableLeft, OUTPUT);
     pinMode(control1Left, OUTPUT);
@@ -63,10 +64,20 @@ void MotorController::stop() {
     digitalWrite(enableRight, LOW);
 }
 
+void MotorController::setSpeed(int newSpeed) {
+    speed = newSpeed;
+}
+
+int MotorController::getSpeed() {
+    return speed;
+}
+
 void MotorController::preamble() {
     digitalWrite(enableLeft, LOW);
     digitalWrite(enableRight, LOW);
     delay(DELAY);
     digitalWrite(enableLeft, HIGH);
     digitalWrite(enableRight, HIGH);
+    // analogWrite(enableLeft, speed);
+    // analogWrite(enableRight, speed);
 }

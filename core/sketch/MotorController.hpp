@@ -23,6 +23,8 @@ class MotorController {
         void turnLeft();
         void turnRight();
         void stop();
+        void setSpeed(int newSpeed);
+        int getSpeed();
 
     private:
         byte enableLeft;
@@ -31,6 +33,7 @@ class MotorController {
         byte enableRight;
         byte control1Right;
         byte control2Right;
+        int speed;
         void preamble();
 };
 
