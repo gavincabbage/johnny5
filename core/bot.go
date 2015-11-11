@@ -6,8 +6,8 @@ import (
 	"time"
 	"math"
 
-	"github.com/kidoman/embd"
-	_ "github.com/kidoman/embd/host/rpi"
+	"github.com/gavincabbage/embd"
+	_ "github.com/gavincabbage/embd/host/rpi"
 )
 
 var moveCodes map[string]byte = map[string]byte{
