@@ -1,10 +1,4 @@
 core/sketch/build-pro5v328
-core/core
-core/main
 */a.out
 feed/venv/
 *.tgz
-web/node_modules
-web/bower_components
-web/public/dist
-web/public/libs

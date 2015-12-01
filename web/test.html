@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Testing Webdis</title>
+</head>
+
+<body>
+    <h1>Testing Webdis</h1>
+</body>
+
+<script>
+// var jsonSocket = new WebSocket("ws://192.168.1.109:7379/.json");
+// function setup() {
+//     jsonSocket.onopen = function() {
+//
+//         console.log("JSON socket connected!");
+//         jsonSocket.send(JSON.stringify(["SET", "hello", "world"]));
+//         console.log("Send first, sending second");
+//         jsonSocket.send(JSON.stringify(["GET", "hello"]));
+//     };
+//     jsonSocket.onmessage = function(messageEvent) {
+//         console.log("JSON received:", messageEvent.data);
+//     };
+//     jsonSocket.onclose = function() {
+//         console.log("closing websocket");
+//     };
+// }
+// function buttonWasClicked() {
+//     console.log("button was clicked!");
+//     jsonSocket.send(JSON.stringify(["SET", "hello2", "mondo"]));
+// }
+// setup();
+var previous_response_length = 0
+xhr = new XMLHttpRequest()
+xhr.open("GET", "http://192.168.1.109:7379/SUBSCRIBE/hello", true);
+xhr.onreadystatechange = checkData;
+xhr.send(null);
+
+function checkData() {
+    if(xhr.readyState == 3)  {
+        response = xhr.responseText;
+        chunk = response.slice(previous_response_length);
+        previous_response_length = response.length;
+        console.log(chunk);
+    }
+};
+</script>
+
+</html>
