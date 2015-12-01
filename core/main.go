@@ -134,7 +134,6 @@ func main() {
 	go publishMeasurements("distance.right", bot.SenseRightDistance, pubChan)
 	go publishMeasurements("distance.center", bot.SenseCenterDistance, pubChan)
 	go mouseOdometer()
-	go bot.RunMag()
 	for {
 		select {
 		case data := <-subChan:
