@@ -1,12 +1,12 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"net/http"
 )
 
 func main() {
-	fmt.Println("Starting static server")
-	dir := "/home/johnny"
-	panic(http.ListenAndServe("0.0.0.0:8080", http.FileServer(http.Dir(dir))))
+	log.Println("Starting static server")
+	dir := "/home/gavin/Development/johnny5/dist/web"
+	panic(http.ListenAndServe("127.0.0.1:8080", http.FileServer(http.Dir(dir))))
 }

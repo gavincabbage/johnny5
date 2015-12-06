@@ -2,3 +2,6 @@ core/sketch/build-pro5v328
 */a.out
 feed/venv/
 *.tgz
+dist
+web/node_modules
+web/public/libs

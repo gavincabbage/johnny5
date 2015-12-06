@@ -1,0 +1,9 @@
+body {
+  background: gray;
+}
+
+#feed {
+    width: 320px;
+    height: 240px;
+    background: black;
+}
